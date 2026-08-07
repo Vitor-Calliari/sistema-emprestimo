@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    container_name: emprestimos-db
+    environment:
+      POSTGRES_DB: emprestimos
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - emprestimos_pgdata:/var/lib/postgresql/data
+
+volumes:
+  emprestimos_pgdata:
