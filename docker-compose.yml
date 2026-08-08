@@ -3,6 +3,7 @@ services:
   postgres:
     image: postgres:16
     container_name: emprestimos-db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: emprestimos
       POSTGRES_USER: admin
