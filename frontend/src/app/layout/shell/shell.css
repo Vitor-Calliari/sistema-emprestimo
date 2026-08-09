@@ -1,0 +1,11 @@
+.container {
+  height: calc(100vh - 64px); /* 64px = altura padrao do mat-toolbar */
+}
+
+.sidenav {
+  width: 220px;
+}
+
+.content {
+  padding: 24px;
+}

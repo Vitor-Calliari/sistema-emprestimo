@@ -1,0 +1,46 @@
+<div class="header">
+  <h1>Clientes</h1>
+  <button mat-raised-button color="primary" (click)="novoCliente()">
+    <mat-icon>add</mat-icon>
+    Novo Cliente
+  </button>
+</div>
+
+<table mat-table [dataSource]="clientes()" class="tabela">
+
+  <ng-container matColumnDef="nome">
+    <th mat-header-cell *matHeaderCellDef>Nome</th>
+    <td mat-cell *matCellDef="let cliente">{{ cliente.nome }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="documento">
+    <th mat-header-cell *matHeaderCellDef>Documento</th>
+    <td mat-cell *matCellDef="let cliente">{{ cliente.documento }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef>Email</th>
+    <td mat-cell *matCellDef="let cliente">{{ cliente.email || '-' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="telefone">
+    <th mat-header-cell *matHeaderCellDef>Telefone</th>
+    <td mat-cell *matCellDef="let cliente">{{ cliente.telefone || '-' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="acoes">
+    <th mat-header-cell *matHeaderCellDef>Ações</th>
+    <td mat-cell *matCellDef="let cliente">
+      <button mat-icon-button color="warn" (click)="excluir(cliente.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="colunasExibidas"></tr>
+  <tr mat-row *matRowDef="let row; columns: colunasExibidas;"></tr>
+</table>
+
+@if (clientes().length === 0) {
+  <p class="vazio">Nenhum cliente cadastrado ainda.</p>
+}

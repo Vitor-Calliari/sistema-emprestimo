@@ -1,6 +1,7 @@
 package com.vitorcalliari.emprestimos.controller;
 
-import com.vitorcalliari.emprestimos.dto.*;
+import com.vitorcalliari.emprestimos.dto.EmprestimoRequestDTO;
+import com.vitorcalliari.emprestimos.dto.EmprestimoResponseDTO;
 import com.vitorcalliari.emprestimos.service.EmprestimoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

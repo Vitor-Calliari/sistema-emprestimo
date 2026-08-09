@@ -21,4 +21,26 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(corpo);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(
+            IllegalArgumentException ex) {
+        Map<String, Object> corpo = Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.CONFLICT.value(),
+                "mensagem", ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(corpo);
+    }
+
+    @ExceptionHandler(IntegracaoException.class)
+    public ResponseEntity<Map<String, Object>> handleIntegracaoExterna(
+            IntegracaoException ex) {
+        Map<String, Object> corpo = Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "mensagem", "Nao foi possivel obter dados do Banco Central: " + ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(corpo);
+    }
 }

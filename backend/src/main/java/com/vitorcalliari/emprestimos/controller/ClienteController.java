@@ -1,0 +1,42 @@
+package com.vitorcalliari.emprestimos.controller;
+
+import com.vitorcalliari.emprestimos.dto.ClienteResponseDTO;
+import com.vitorcalliari.emprestimos.dto.ClienteRequestDTO;
+import com.vitorcalliari.emprestimos.service.ClienteService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/clientes")
+@RequiredArgsConstructor
+public class ClienteController {
+    private final ClienteService clienteService;
+
+    @PostMapping
+    public ResponseEntity<ClienteResponseDTO> cadastrar (
+            @Valid @RequestBody ClienteRequestDTO dto) {
+        ClienteResponseDTO response = clienteService.cadastrar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClienteResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(clienteService.listarTodos());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(clienteService.buscarPorId(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        return ResponseEntity.noContent().build();
+    }
+
+}

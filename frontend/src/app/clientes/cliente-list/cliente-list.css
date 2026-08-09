@@ -1,0 +1,16 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.tabela {
+  width: 100%;
+}
+
+.vazio {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 24px;
+}

@@ -1,6 +1,9 @@
 package com.vitorcalliari.emprestimos.service;
 
-import com.vitorcalliari.emprestimos.dto.*;
+import com.vitorcalliari.emprestimos.client.BcbClient;
+import com.vitorcalliari.emprestimos.client.dto.BcbCotacaoDTO;
+import com.vitorcalliari.emprestimos.dto.EmprestimoRequestDTO;
+import com.vitorcalliari.emprestimos.dto.EmprestimoResponseDTO;
 import com.vitorcalliari.emprestimos.exception.RecursoNaoEncontradoException;
 import com.vitorcalliari.emprestimos.model.*;
 import com.vitorcalliari.emprestimos.repository.*;
@@ -9,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -18,6 +23,7 @@ public class EmprestimoService {
     private final ClienteRepository clienteRepository;
     private final MoedaRepository moedaRepository;
     private final EmprestimoCalculoService calculoService;
+    private final BcbClient bcbClient;
 
     @Transactional
     public EmprestimoResponseDTO cadastrar(EmprestimoRequestDTO dto) {
@@ -25,14 +31,21 @@ public class EmprestimoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Cliente não encontrado: id " + dto.clienteId()));
 
-        Moeda moeda = moedaRepository.findById(dto.moedaCodigo())
+        String codigoMoeda = dto.moedaCodigo().toUpperCase();
+        Moeda moeda = moedaRepository.findById(codigoMoeda)
                 .orElseThrow(()-> new RecursoNaoEncontradoException(
-                        "Moeda não encontrada: " + dto.moedaCodigo()));
+                        "Moeda não encontrada: " + codigoMoeda));
+
+        BcbCotacaoDTO cotacao = bcbClient.buscarCotacaoComFallback(
+                codigoMoeda, LocalDate.now());
+        BigDecimal taxaConversao = cotacao.cotacaoVenda();
 
         long numeroMeses = calculoService.calcularMesesEntreDatas(
                 dto.dataEmprestimo(), dto.dataVencimento());
 
-        BigDecimal valorReais = dto.valorObtido().multiply(dto.taxaConversao());
+        BigDecimal valorReais = dto.valorObtido()
+                .multiply(taxaConversao)
+                .setScale(2, RoundingMode.HALF_UP);
 
         BigDecimal valorPagarVencimento = calculoService.calcularValorComJurosCompostos(
                 valorReais, dto.taxaJurosMensal(), numeroMeses);
@@ -42,7 +55,7 @@ public class EmprestimoService {
         emprestimo.setMoeda(moeda);
         emprestimo.setDataEmprestimo(dto.dataEmprestimo());
         emprestimo.setValorObtido(dto.valorObtido());
-        emprestimo.setTaxaConversao(dto.taxaConversao());
+        emprestimo.setTaxaConversao(taxaConversao);
         emprestimo.setValorReais(valorReais);
         emprestimo.setDataVencimento(dto.dataVencimento());
         emprestimo.setTaxaJurosMensal(dto.taxaJurosMensal());
