@@ -39,4 +39,10 @@ public class ClienteController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> atualizar(
+            @PathVariable Long id, @Valid @RequestBody ClienteRequestDTO dto) {
+        return ResponseEntity.ok(clienteService.atualizar(id, dto));
+    }
+
 }

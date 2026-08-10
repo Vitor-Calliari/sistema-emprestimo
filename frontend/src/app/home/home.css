@@ -1,0 +1,15 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+table {
+  width: 100%;
+}
+
+.vazio {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+  padding: 16px 0;
+}

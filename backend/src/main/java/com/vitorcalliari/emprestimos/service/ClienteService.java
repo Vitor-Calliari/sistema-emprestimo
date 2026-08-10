@@ -44,8 +44,29 @@ public class ClienteService {
     public ClienteResponseDTO buscarPorId(Long id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
-                        "Cliente nao encontrado: id " + id));
+                        "Cliente não encontrado: id " + id));
         return paraResponseDTO(cliente);
+    }
+
+    @Transactional
+    public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Cliente não encontrado: id " + id));
+
+        clienteRepository.findByDocumento(dto.documento())
+                .filter(c -> !c.getId().equals(id))
+                .ifPresent(c -> {
+                    throw new IllegalArgumentException(
+                            "Já existe um cliente cadastrado com esse documento");
+                });
+        cliente.setNome(dto.nome());
+        cliente.setDocumento(dto.documento());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+
+        Cliente atualizado = clienteRepository.save(cliente);
+        return paraResponseDTO(atualizado);
     }
 
     @Transactional

@@ -34,6 +34,12 @@ public class EmprestimoController {
         return ResponseEntity.ok(emprestimoService.buscarPorId(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<EmprestimoResponseDTO> atualizar(
+            @PathVariable Long id, @Valid @RequestBody EmprestimoRequestDTO dto) {
+        return ResponseEntity.ok(emprestimoService.atualizar(id, dto));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         emprestimoService.deletar(id);

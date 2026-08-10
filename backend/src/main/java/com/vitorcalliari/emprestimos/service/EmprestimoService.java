@@ -5,6 +5,7 @@ import com.vitorcalliari.emprestimos.client.dto.BcbCotacaoDTO;
 import com.vitorcalliari.emprestimos.dto.EmprestimoRequestDTO;
 import com.vitorcalliari.emprestimos.dto.EmprestimoResponseDTO;
 import com.vitorcalliari.emprestimos.exception.RecursoNaoEncontradoException;
+import com.vitorcalliari.emprestimos.exception.DadosInvalidosException;
 import com.vitorcalliari.emprestimos.model.*;
 import com.vitorcalliari.emprestimos.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,11 @@ public class EmprestimoService {
         Moeda moeda = moedaRepository.findById(codigoMoeda)
                 .orElseThrow(()-> new RecursoNaoEncontradoException(
                         "Moeda não encontrada: " + codigoMoeda));
+
+        if (!dto.dataVencimento().isAfter(dto.dataEmprestimo())) {
+            throw new DadosInvalidosException(
+                    "A data de vencimento deve ser posterior a data do emprestimo");
+        }
 
         BcbCotacaoDTO cotacao = bcbClient.buscarCotacaoComFallback(
                 codigoMoeda, LocalDate.now());
@@ -92,6 +98,55 @@ public class EmprestimoService {
         }
         emprestimoRepository.deleteById(id);
     }
+
+    @Transactional
+    public EmprestimoResponseDTO atualizar(Long id, EmprestimoRequestDTO dto) {
+        Emprestimo emprestimo = emprestimoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Emprestimo nao encontrado: id " + id));
+
+        Cliente cliente = clienteRepository.findById(dto.clienteId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Cliente nao encontrado: id " + dto.clienteId()));
+
+        String codigoMoeda = dto.moedaCodigo().toUpperCase();
+        Moeda moeda = moedaRepository.findById(codigoMoeda)
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "Moeda nao encontrada: " + codigoMoeda));
+
+        if (!dto.dataVencimento().isAfter(dto.dataEmprestimo())) {
+            throw new DadosInvalidosException(
+                    "A data de vencimento deve ser posterior a data do emprestimo");
+        }
+
+        BcbCotacaoDTO cotacao = bcbClient.buscarCotacaoComFallback(codigoMoeda, LocalDate.now());
+        BigDecimal taxaConversao = cotacao.cotacaoVenda();
+
+        long numeroMeses = calculoService.calcularMesesEntreDatas(
+                dto.dataEmprestimo(), dto.dataVencimento());
+
+        BigDecimal valorReais = dto.valorObtido()
+                .multiply(taxaConversao)
+                .setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal valorPagarVencimento = calculoService.calcularValorComJurosCompostos(
+                valorReais, dto.taxaJurosMensal(), numeroMeses);
+
+        emprestimo.setCliente(cliente);
+        emprestimo.setMoeda(moeda);
+        emprestimo.setDataEmprestimo(dto.dataEmprestimo());
+        emprestimo.setValorObtido(dto.valorObtido());
+        emprestimo.setTaxaConversao(taxaConversao);
+        emprestimo.setValorReais(valorReais);
+        emprestimo.setDataVencimento(dto.dataVencimento());
+        emprestimo.setTaxaJurosMensal(dto.taxaJurosMensal());
+        emprestimo.setValorPagarVencimento(valorPagarVencimento);
+
+        Emprestimo atualizado = emprestimoRepository.save(emprestimo);
+
+        return paraResponseDTO(atualizado, numeroMeses);
+    }
+
 
     private EmprestimoResponseDTO paraResponseDTO (Emprestimo e, long numeroMeses) {
         return new EmprestimoResponseDTO(

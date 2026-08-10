@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClienteService } from '../../core/services/cliente.service';
 import { ClienteResponse } from '../../core/models/cliente.model';
+import { ClienteForm } from '../cliente-form/cliente-form';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-cliente-list',
@@ -16,6 +18,7 @@ import { ClienteResponse } from '../../core/models/cliente.model';
 export class ClienteList implements OnInit {
   private clienteService = inject(ClienteService);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
   clientes = signal<ClienteResponse[]>([]);
   colunasExibidas = ['nome', 'documento', 'email', 'telefone', 'acoes'];
@@ -46,6 +49,23 @@ export class ClienteList implements OnInit {
   }
 
   novoCliente(): void {
+    this.abrirFormulario();
+  }
 
+  editarCliente(cliente: ClienteResponse): void {
+    this.abrirFormulario(cliente);
+  }
+
+  private abrirFormulario(cliente?: ClienteResponse): void {
+    const dialogRef = this.dialog.open(ClienteForm, {
+      width: '400px',
+      data: cliente ?? null
+    });
+
+    dialogRef.afterClosed().subscribe((salvou) => {
+      if (salvou) {
+        this.carregarClientes();
+      }
+    });
   }
 }

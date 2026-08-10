@@ -1,0 +1,73 @@
+<h2 mat-dialog-title>{{ modoEdicao ? 'Editar Empréstimo' : 'Novo Empréstimo' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="salvar()">
+  <div mat-dialog-content class="conteudo">
+
+    <mat-form-field appearance="outline" class="campo-full">
+      <mat-label>Cliente</mat-label>
+      <mat-select formControlName="clienteId">
+        @for (cliente of clientes(); track cliente.id) {
+          <mat-option [value]="cliente.id">{{ cliente.nome }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.clienteId.hasError('required') && form.controls.clienteId.touched) {
+        <mat-error>Selecione um cliente</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-full">
+      <mat-label>Moeda</mat-label>
+      <mat-select formControlName="moedaCodigo">
+        @for (moeda of moedas(); track moeda.codigo) {
+          <mat-option [value]="moeda.codigo">{{ moeda.codigo }} - {{ moeda.nome }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.moedaCodigo.hasError('required') && form.controls.moedaCodigo.touched) {
+        <mat-error>Selecione uma moeda</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-full">
+      <mat-label>Valor Obtido</mat-label>
+      <input matInput type="text" inputmode="decimal" formControlName="valorObtido" placeholder="Ex: 1000,50">
+      @if (form.controls.valorObtido.hasError('pattern') && form.controls.valorObtido.touched) {
+        <mat-error>Use apenas numeros, com virgula ou ponto para decimais</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-full">
+      <mat-label>Data do Emprestimo</mat-label>
+      <input matInput [matDatepicker]="pickerInicio" formControlName="dataEmprestimo">
+      <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+      <mat-datepicker #pickerInicio></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-full">
+      <mat-label>Data de Vencimento</mat-label>
+      <input matInput [matDatepicker]="pickerFim" formControlName="dataVencimento"
+             [min]="form.controls.dataEmprestimo.value">
+      <mat-datepicker-toggle matIconSuffix [for]="pickerFim"></mat-datepicker-toggle>
+      <mat-datepicker #pickerFim></mat-datepicker>
+      @if (form.controls.dataVencimento.hasError('required') && form.controls.dataVencimento.touched) {
+        <mat-error>Informe a data de vencimento</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-full">
+      <mat-label>Taxa de Juros Mensal</mat-label>
+      <input matInput type="text" inputmode="decimal" formControlName="taxaJurosMensal" placeholder="Ex: 1,5">
+      <span matTextSuffix>%</span>
+      @if (form.controls.taxaJurosMensal.hasError('pattern') && form.controls.taxaJurosMensal.touched) {
+        <mat-error>Use apenas numeros, com virgula ou ponto para decimais</mat-error>
+      }
+    </mat-form-field>
+
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancelar()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="salvando">
+      {{ salvando ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </div>
+</form>

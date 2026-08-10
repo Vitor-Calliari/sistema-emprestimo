@@ -1,0 +1,10 @@
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 400px;
+}
+
+.campo-full {
+  width: 100%;
+}

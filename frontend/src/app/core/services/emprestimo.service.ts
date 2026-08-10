@@ -21,6 +21,10 @@ export class EmprestimoService {
         return this.http.post<EmprestimoResponse>(this.baseUrl, dto);
     }
 
+    atualizar(id: number, dto: EmprestimoRequest): Observable<EmprestimoResponse> {
+        return this.http.put<EmprestimoResponse>(`${this.baseUrl}/${id}`, dto);
+    }
+
     deletar(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`);
     }

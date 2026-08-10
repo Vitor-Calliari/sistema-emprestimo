@@ -9,6 +9,6 @@ public record EmprestimoRequestDTO(
    @NotBlank String moedaCodigo,
    @NotNull @PastOrPresent LocalDate dataEmprestimo,
    @NotNull @Positive BigDecimal valorObtido,
-   @NotNull @Future LocalDate dataVencimento,
+   @NotNull LocalDate dataVencimento,
    @NotNull @PositiveOrZero BigDecimal taxaJurosMensal
 ) {}

@@ -16,7 +16,7 @@ export interface EmprestimoResponse {
     valorObtido: number;
     taxaConversao: number;
     valorReais: number;
-    dataVencumento: string;
+    dataVencimento: string;
     numeroMeses: number;
     taxaJurosMensal: number;
     valorPagarVencimento: number;
