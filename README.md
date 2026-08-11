@@ -29,7 +29,7 @@ A aplicação permite cadastrar clientes e empréstimos, calcula automaticamente
 ### Backend
 | Tecnologia | Por quê |
 |---|---|
-| Java 21 + Spring Boot 4 | Ecossistema robusto e alinhado ao contexto da vaga (empresa com sistema legado em PL/SQL em transição de stack) |
+| Java 21 + Spring Boot 4 | Ecossistema robusto e familiaridade com o uso das tecnologias por conta da graduação |
 | Spring Data JPA / Hibernate | Produtividade no CRUD básico, combinado com queries SQL nativas pontuais nos relatórios para demonstrar domínio de SQL além da abstração do ORM |
 | PostgreSQL | Banco relacional robusto; uso de `NUMERIC` para todos os valores monetários, evitando erros de arredondamento de ponto flutuante |
 | Bean Validation | Validação declarativa dos DTOs de entrada |
