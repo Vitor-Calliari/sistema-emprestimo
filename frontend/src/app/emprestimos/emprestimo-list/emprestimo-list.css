@@ -14,3 +14,7 @@
   color: rgba(0, 0, 0, 0.5);
   margin-top: 24px;
 }
+
+.table-wrapper {
+  overflow-x: auto;
+}

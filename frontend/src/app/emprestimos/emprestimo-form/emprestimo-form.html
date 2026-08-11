@@ -31,12 +31,12 @@
       <mat-label>Valor Obtido</mat-label>
       <input matInput type="text" inputmode="decimal" formControlName="valorObtido" placeholder="Ex: 1000,50">
       @if (form.controls.valorObtido.hasError('pattern') && form.controls.valorObtido.touched) {
-        <mat-error>Use apenas numeros, com virgula ou ponto para decimais</mat-error>
+        <mat-error>Use apenas números, com vírgula ou ponto para decimais</mat-error>
       }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="campo-full">
-      <mat-label>Data do Emprestimo</mat-label>
+      <mat-label>Data do Empréstimo</mat-label>
       <input matInput [matDatepicker]="pickerInicio" formControlName="dataEmprestimo">
       <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
       <mat-datepicker #pickerInicio></mat-datepicker>
@@ -58,7 +58,7 @@
       <input matInput type="text" inputmode="decimal" formControlName="taxaJurosMensal" placeholder="Ex: 1,5">
       <span matTextSuffix>%</span>
       @if (form.controls.taxaJurosMensal.hasError('pattern') && form.controls.taxaJurosMensal.touched) {
-        <mat-error>Use apenas numeros, com virgula ou ponto para decimais</mat-error>
+        <mat-error>Use apenas números, com vírgula ou ponto para decimais</mat-error>
       }
     </mat-form-field>
 

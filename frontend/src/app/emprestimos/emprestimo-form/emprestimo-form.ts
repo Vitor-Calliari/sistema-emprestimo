@@ -83,18 +83,18 @@ export class EmprestimoForm implements OnInit {
     request.subscribe({
       next: () => {
         const mensagem = this.modoEdicao
-          ? 'Emprestimo atualizado com sucesso'
-          : 'Emprestimo cadastrado com sucesso';
+          ? 'Empréstimo atualizado com sucesso'
+          : 'Empréstimo cadastrado com sucesso';
         this.snackBar.open(mensagem, 'Fechar', { duration: 3000 });
         this.dialogRef.close(true);
       },
       error: (err) => {
         this.salvando = false;
         const mensagem = err.status === 503
-          ? 'Nao foi possivel obter a cotacao do Banco Central. Tente novamente.'
+          ? 'Não foi possivel obter a cotacao do Banco Central. Tente novamente.'
           : err.status === 400
             ? (err.error?.mensagem ?? 'Dados invalidos')
-            : 'Erro ao salvar emprestimo';
+            : 'Erro ao salvar empréstimo';
         this.snackBar.open(mensagem, 'Fechar', { duration: 3000 });
       }
     });

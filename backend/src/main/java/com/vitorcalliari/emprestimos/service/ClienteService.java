@@ -18,16 +18,22 @@ public class ClienteService {
 
     @Transactional
     public ClienteResponseDTO cadastrar(ClienteRequestDTO dto) {
-        clienteRepository.findByDocumento(dto.documento())
+        String documentoFormatado = formatarDocumento(dto.documento());
+        String telefoneFormatado = formataTelefone(dto.telefone());
+
+        clienteRepository.findByDocumento(documentoFormatado)
                 .ifPresent(c -> {
                     throw new IllegalArgumentException(
                             "Ja existe um cliente cadastrado com esse documento");
                 });
+
+
+
         Cliente cliente = new Cliente();
         cliente.setNome(dto.nome());
-        cliente.setDocumento(dto.documento());
+        cliente.setDocumento(documentoFormatado);
         cliente.setEmail(dto.email());
-        cliente.setTelefone(dto.telefone());
+        cliente.setTelefone(telefoneFormatado);
 
         Cliente salvo = clienteRepository.save(cliente);
         return paraResponseDTO(salvo);
@@ -54,16 +60,18 @@ public class ClienteService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
                         "Cliente não encontrado: id " + id));
 
-        clienteRepository.findByDocumento(dto.documento())
+        String documentoFormatado = formatarDocumento(dto.documento());
+        String telefoneFormatado = formataTelefone(dto.telefone());
+        clienteRepository.findByDocumento(documentoFormatado)
                 .filter(c -> !c.getId().equals(id))
                 .ifPresent(c -> {
                     throw new IllegalArgumentException(
                             "Já existe um cliente cadastrado com esse documento");
                 });
         cliente.setNome(dto.nome());
-        cliente.setDocumento(dto.documento());
+        cliente.setDocumento(documentoFormatado);
         cliente.setEmail(dto.email());
-        cliente.setTelefone(dto.telefone());
+        cliente.setTelefone(telefoneFormatado);
 
         Cliente atualizado = clienteRepository.save(cliente);
         return paraResponseDTO(atualizado);
@@ -81,5 +89,13 @@ public class ClienteService {
         return new ClienteResponseDTO(
                 c.getId(), c.getNome(), c.getDocumento(),
                 c.getEmail(), c.getTelefone(), c.getCriadoEm());
+    }
+
+    private String formatarDocumento(String documento) {
+        return documento == null ? null : documento.replaceAll("\\D", "");
+    }
+
+    private String formataTelefone(String telefone) {
+        return telefone == null ? null : telefone.replaceAll("\\D", "");
     }
 }

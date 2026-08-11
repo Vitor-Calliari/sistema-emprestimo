@@ -7,6 +7,7 @@ import com.vitorcalliari.emprestimos.exception.IntegracaoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -30,14 +31,19 @@ public class BcbClient {
     public List<BcbMoedaDTO> buscarMoedas() {
         String url = BASE_URL + "/Moedas?$format=json";
 
-        BcbODataResponse<BcbMoedaDTO> resposta = restTemplate.exchange(
-                url,
-                org.springframework.http.HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<BcbODataResponse<BcbMoedaDTO>>() {}
-        ).getBody();
+        try {
+            BcbODataResponse<BcbMoedaDTO> resposta = restTemplate.exchange(
+                    url,
+                    org.springframework.http.HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<BcbODataResponse<BcbMoedaDTO>>() {}
+            ).getBody();
 
-        return resposta != null ? resposta.value() : List.of();
+            return resposta != null ? resposta.value() : List.of();
+        } catch (RestClientException ex) {
+            throw new IntegracaoException(
+                    "Nao foi possivel obter a lista de moedas do Banco Central. Tente novamente em instantes.");
+        }
     }
 
     public Optional<BcbCotacaoDTO> buscarCotacao(String codigoMoeda, LocalDate data) {
@@ -48,28 +54,34 @@ public class BcbClient {
                 .queryParam("@moeda", "'" + codigoMoeda + "'")
                 .queryParam("@dataCotacao", "'" + dataFormatada + "'")
                 .queryParam("$format", "json")
+                .encode()
                 .toUriString();
-        BcbODataResponse<BcbCotacaoDTO> resposta = restTemplate.exchange(
-                url,
-                org.springframework.http.HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<BcbODataResponse<BcbCotacaoDTO>>() {}
-        ).getBody();
 
-        if (resposta == null || resposta.value().isEmpty()) {
-            return Optional.empty();
+        try {
+            BcbODataResponse<BcbCotacaoDTO> resposta = restTemplate.exchange(
+                    url,
+                    org.springframework.http.HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<BcbODataResponse<BcbCotacaoDTO>>() {}
+            ).getBody();
+
+            if (resposta == null || resposta.value().isEmpty()) {
+                return Optional.empty();
+            }
+
+            List<BcbCotacaoDTO> cotacoes = resposta.value();
+            return Optional.of(cotacoes.get(cotacoes.size() - 1));
+        } catch (RestClientException ex) {
+            throw new IntegracaoException(
+                    "Nao foi possivel consultar a cotacao no Banco Central. Tente novamente em instantes.");
         }
-
-        // Se houver mais de um boletim no dia, pega o ultimo (fechamento)
-        List<BcbCotacaoDTO> cotacoes = resposta.value();
-        return Optional.of(cotacoes.get(cotacoes.size() - 1));
     }
 
     public BcbCotacaoDTO buscarCotacaoComFallback(String codigoMoeda, LocalDate data) {
         LocalDate dataConsulta = data;
         int tentativas = 0;
 
-        while (tentativas < 7) { // evita loop infinito, tenta ate 7 dias uteis pra tras
+        while (tentativas < 7) {
             Optional<BcbCotacaoDTO> cotacao = buscarCotacao(codigoMoeda, dataConsulta);
             if (cotacao.isPresent()) {
                 return cotacao.get();

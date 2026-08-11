@@ -1,5 +1,10 @@
-<h1>Visão Geral</h1>
-
+<div class="header">
+  <h1>Visao Geral</h1>
+  <button mat-stroked-button color="primary" (click)="sincronizarMoedas()" [disabled]="sincronizando">
+    <mat-icon>sync</mat-icon>
+    {{ sincronizando ? 'Sincronizando...' : 'Sincronizar Moedas' }}
+  </button>
+</div>
 <div class="grid">
 
   <mat-card>
@@ -52,7 +57,7 @@
         </ng-container>
 
         <ng-container matColumnDef="quantidadeEmprestimos">
-          <th mat-header-cell *matHeaderCellDef>Qtd Emprestimos</th>
+          <th mat-header-cell *matHeaderCellDef>Qtd Empréstimos</th>
           <td mat-cell *matCellDef="let r">{{ r.quantidadeEmprestimos }}</td>
         </ng-container>
 

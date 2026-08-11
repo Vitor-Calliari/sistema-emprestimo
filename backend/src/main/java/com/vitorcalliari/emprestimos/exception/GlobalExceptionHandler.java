@@ -1,5 +1,6 @@
 package com.vitorcalliari.emprestimos.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,5 +66,16 @@ public class GlobalExceptionHandler {
                 "mensagem", "Dados inválidos na requisição"
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(corpo);
+    }
+
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleIntegridade(DataIntegrityViolationException ex) {
+        Map<String, Object> corpo = Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.CONFLICT.value(),
+                "mensagem", "Não é possível excluir: existem empréstimos vinculados a este cliente"
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(corpo);
     }
 }

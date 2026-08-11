@@ -1,11 +1,23 @@
 .container {
-  height: calc(100vh - 64px); /* 64px = altura padrao do mat-toolbar */
+  height: calc(100vh - 64px);
 }
 
 .sidenav {
   width: 220px;
+  background-color: #eaf1fb;
+}
+
+.active-link {
+  background-color: rgba(25, 118, 210, 0.12);
+  border-left: 4px solid #1976d2;
 }
 
 .content {
   padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 12px;
+  }
 }

@@ -68,7 +68,7 @@ export class EmprestimoList implements OnInit {
 
   private abrirFormulario(emprestimo?: EmprestimoResponse): void {
     const dialogRef = this.dialog.open(EmprestimoForm, {
-      width: '450px',
+      width: '90vw', maxWidth: '450px',
       data: emprestimo ?? null
     });
 

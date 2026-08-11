@@ -41,10 +41,14 @@ export class ClienteList implements OnInit {
 
     this.clienteService.deletar(id).subscribe({
       next: () => {
-        this.snackBar.open('Cliente excluído com sucesso', 'Fechar', {duration: 3000});
+        console.log('DELETE bem sucedido, atualizando lista...');
+        this.snackBar.open('Cliente excluído com sucesso', 'Fechar', {duration: 5000});
         this.carregarClientes();
       },
-      error: () => this.snackBar.open('Erro ao excluir cliente', 'Fechar', {duration: 3000})
+      error: (err) => {
+        console.error('Erro ao excluir:', err);
+        this.snackBar.open('Erro ao excluir cadastro. Verifique se há empréstimos registrados para ele ', 'Fechar', {duration: 5000})
+      }
     });
   }
 
@@ -58,7 +62,7 @@ export class ClienteList implements OnInit {
 
   private abrirFormulario(cliente?: ClienteResponse): void {
     const dialogRef = this.dialog.open(ClienteForm, {
-      width: '400px',
+      width: '90vw', maxWidth: '400px' ,
       data: cliente ?? null
     });
 
