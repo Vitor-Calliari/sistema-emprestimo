@@ -15,9 +15,9 @@
     </ng-container>
 
     <ng-container matColumnDef="documento">
-      <th mat-header-cell *matHeaderCellDef>Documento</th>
-      <td mat-cell *matCellDef="let cliente">{{ cliente.documento }}</td>
-    </ng-container>
+    <th mat-header-cell *matHeaderCellDef>Documento</th>
+    <td mat-cell *matCellDef="let cliente">{{ cliente.documento | documento }}</td>
+  </ng-container>
 
     <ng-container matColumnDef="email">
       <th mat-header-cell *matHeaderCellDef>Email</th>
@@ -26,7 +26,7 @@
 
     <ng-container matColumnDef="telefone">
       <th mat-header-cell *matHeaderCellDef>Telefone</th>
-      <td mat-cell *matCellDef="let cliente">{{ cliente.telefone || '-' }}</td>
+      <td mat-cell *matCellDef="let cliente">{{ cliente.telefone | telefone }}</td>
     </ng-container>
 
     <ng-container matColumnDef="acoes">

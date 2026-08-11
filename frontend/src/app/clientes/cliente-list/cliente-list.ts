@@ -7,11 +7,16 @@ import { ClienteService } from '../../core/services/cliente.service';
 import { ClienteResponse } from '../../core/models/cliente.model';
 import { ClienteForm } from '../cliente-form/cliente-form';
 import { MatDialog } from '@angular/material/dialog';
+import { DocumentoPipe } from '../../core/pipes/documento-pipe';
+import { TelefonePipe } from '../../core/pipes/telefone-pipe';
 
 @Component({
   selector: 'app-cliente-list',
   standalone: true,
-  imports: [MatTableModule, MatButtonModule, MatIconModule],
+    imports: [
+    MatTableModule, MatButtonModule, MatIconModule,
+    DocumentoPipe, TelefonePipe
+  ],
   templateUrl: './cliente-list.html',
   styleUrl: './cliente-list.css',
 })
