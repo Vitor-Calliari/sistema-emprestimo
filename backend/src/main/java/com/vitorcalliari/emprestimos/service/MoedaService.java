@@ -31,7 +31,7 @@ public class MoedaService {
     public MoedaResponseDTO buscarPorCodigo(String codigo) {
         Moeda moeda = moedaRepository.findById(codigo)
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
-                        "Moeda nao encontrada: " + codigo));
+                        "Moeda não encontrada: " + codigo));
         return paraResponseDTO(moeda);
     }
 

@@ -24,7 +24,7 @@ public class ClienteService {
         clienteRepository.findByDocumento(documentoFormatado)
                 .ifPresent(c -> {
                     throw new IllegalArgumentException(
-                            "Ja existe um cliente cadastrado com esse documento");
+                            "Já existe um cliente cadastrado com esse documento");
                 });
 
 

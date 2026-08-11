@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> corpo = Map.of(
                 "timestamp", LocalDateTime.now(),
                 "status", HttpStatus.SERVICE_UNAVAILABLE.value(),
-                "mensagem", "Nao foi possivel obter dados do Banco Central: " + ex.getMessage()
+                "mensagem", "Não foi possível obter dados do Banco Central: " + ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(corpo);
     }

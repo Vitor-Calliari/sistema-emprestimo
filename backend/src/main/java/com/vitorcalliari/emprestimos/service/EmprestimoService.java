@@ -39,7 +39,7 @@ public class EmprestimoService {
 
         if (!dto.dataVencimento().isAfter(dto.dataEmprestimo())) {
             throw new DadosInvalidosException(
-                    "A data de vencimento deve ser posterior a data do emprestimo");
+                    "A data de vencimento deve ser posterior a data do empréstimo");
         }
 
         BcbCotacaoDTO cotacao = bcbClient.buscarCotacaoComFallback(
@@ -84,7 +84,7 @@ public class EmprestimoService {
     public EmprestimoResponseDTO buscarPorId(Long id) {
         Emprestimo emprestimo = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
-                        "Emprestimo não encontrado: id " + id));
+                        "Empréstimo não encontrado: id " + id));
 
         long numeroMeses = calculoService.calcularMesesEntreDatas(
                 emprestimo.getDataEmprestimo(), emprestimo.getDataVencimento());
@@ -94,7 +94,7 @@ public class EmprestimoService {
     @Transactional
     public void deletar(Long id) {
         if (!emprestimoRepository.existsById(id)) {
-            throw new RecursoNaoEncontradoException("Emprestimo não encontrado: id " + id);
+            throw new RecursoNaoEncontradoException("Empréstimo não encontrado: id " + id);
         }
         emprestimoRepository.deleteById(id);
     }
@@ -103,20 +103,20 @@ public class EmprestimoService {
     public EmprestimoResponseDTO atualizar(Long id, EmprestimoRequestDTO dto) {
         Emprestimo emprestimo = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
-                        "Emprestimo nao encontrado: id " + id));
+                        "Empréstimo nao encontrado: id " + id));
 
         Cliente cliente = clienteRepository.findById(dto.clienteId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
-                        "Cliente nao encontrado: id " + dto.clienteId()));
+                        "Cliente não encontrado: id " + dto.clienteId()));
 
         String codigoMoeda = dto.moedaCodigo().toUpperCase();
         Moeda moeda = moedaRepository.findById(codigoMoeda)
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
-                        "Moeda nao encontrada: " + codigoMoeda));
+                        "Moeda não encontrada: " + codigoMoeda));
 
         if (!dto.dataVencimento().isAfter(dto.dataEmprestimo())) {
             throw new DadosInvalidosException(
-                    "A data de vencimento deve ser posterior a data do emprestimo");
+                    "A data de vencimento deve ser posterior a data do empréstimo");
         }
 
         BcbCotacaoDTO cotacao = bcbClient.buscarCotacaoComFallback(codigoMoeda, LocalDate.now());

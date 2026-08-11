@@ -42,7 +42,7 @@ public class BcbClient {
             return resposta != null ? resposta.value() : List.of();
         } catch (RestClientException ex) {
             throw new IntegracaoException(
-                    "Nao foi possivel obter a lista de moedas do Banco Central. Tente novamente em instantes.");
+                    "Não foi possível obter a lista de moedas do Banco Central. Tente novamente em instantes.");
         }
     }
 
@@ -73,7 +73,7 @@ public class BcbClient {
             return Optional.of(cotacoes.get(cotacoes.size() - 1));
         } catch (RestClientException ex) {
             throw new IntegracaoException(
-                    "Nao foi possivel consultar a cotacao no Banco Central. Tente novamente em instantes.");
+                    "Não foi possível consultar a cotação no Banco Central. Tente novamente em instantes.");
         }
     }
 
@@ -91,7 +91,7 @@ public class BcbClient {
         }
 
         throw new IntegracaoException(
-                "Nao foi possivel obter cotacao para " + codigoMoeda +
-                        " apos " + tentativas + " tentativas");
+                "Não foi possível obter cotação para " + codigoMoeda +
+                        " após " + tentativas + " tentativas");
     }
 }
